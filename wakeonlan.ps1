@@ -56,102 +56,119 @@ function Send-MagicPacket {
 # Build UI
 $form = New-Object System.Windows.Forms.Form
 $form.Text = 'Wake-on-LAN Configurator'
-$form.Size = New-Object System.Drawing.Size(920,640)
+$form.Size = New-Object System.Drawing.Size(1100,800)   # increased overall form size
 $form.StartPosition = 'CenterScreen'
 $form.Font = New-Object System.Drawing.Font('Segoe UI',9)
+$form.AutoScaleMode = 'Font'
 
 # Left: Adapter list
 $lblAdapters = New-Object System.Windows.Forms.Label
 $lblAdapters.Text = 'Network Adapters:'
 $lblAdapters.Location = New-Object System.Drawing.Point(10,10)
-$lblAdapters.Size = New-Object System.Drawing.Size(200,20)
+$lblAdapters.Size = New-Object System.Drawing.Size(220,20)
+$lblAdapters.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
 $form.Controls.Add($lblAdapters)
 
 $lstAdapters = New-Object System.Windows.Forms.ListBox
 $lstAdapters.Location = New-Object System.Drawing.Point(10,35)
-$lstAdapters.Size = New-Object System.Drawing.Size(330,220)
+$lstAdapters.Size = New-Object System.Drawing.Size(340,320)    # taller to show more items
 $lstAdapters.ScrollAlwaysVisible = $true
+# Anchor so it expands vertically with the form
+$lstAdapters.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Bottom
 $form.Controls.Add($lstAdapters)
 
 # Buttons to refresh and show details
 $btnRefresh = New-Object System.Windows.Forms.Button
 $btnRefresh.Text = 'Refresh Adapters'
-$btnRefresh.Location = New-Object System.Drawing.Point(10,265)
-$btnRefresh.Size = New-Object System.Drawing.Size(160,28)
+$btnRefresh.Location = New-Object System.Drawing.Point(10,365)
+$btnRefresh.Size = New-Object System.Drawing.Size(160,32)
+$btnRefresh.Anchor = [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Top
 $form.Controls.Add($btnRefresh)
 
 $btnRescanAdv = New-Object System.Windows.Forms.Button
 $btnRescanAdv.Text = 'Load Advanced Props'
-$btnRescanAdv.Location = New-Object System.Drawing.Point(180,265)
-$btnRescanAdv.Size = New-Object System.Drawing.Size(160,28)
+$btnRescanAdv.Location = New-Object System.Drawing.Point(180,365)
+$btnRescanAdv.Size = New-Object System.Drawing.Size(170,32)
+$btnRescanAdv.Anchor = [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Top
 $form.Controls.Add($btnRescanAdv)
 
-# Right: details group
+# Right: details group (expanded)
 $grpDetails = New-Object System.Windows.Forms.GroupBox
 $grpDetails.Text = 'Adapter Details & Controls'
-$grpDetails.Location = New-Object System.Drawing.Point(350,10)
-$grpDetails.Size = New-Object System.Drawing.Size(540,300)
+$grpDetails.Location = New-Object System.Drawing.Point(360,10)
+$grpDetails.Size = New-Object System.Drawing.Size(720,360)   # wider & taller
+$grpDetails.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right
 $form.Controls.Add($grpDetails)
 
 $txtDetails = New-Object System.Windows.Forms.TextBox
 $txtDetails.Multiline = $true
 $txtDetails.ScrollBars = 'Vertical'
 $txtDetails.Location = New-Object System.Drawing.Point(10,20)
-$txtDetails.Size = New-Object System.Drawing.Size(520,120)
+$txtDetails.Size = New-Object System.Drawing.Size(700,120)  # wider details area
 $txtDetails.ReadOnly = $true
+$txtDetails.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right
 $grpDetails.Controls.Add($txtDetails)
 
 # Power management checkboxes
 $chkWakeMagic = New-Object System.Windows.Forms.CheckBox
 $chkWakeMagic.Text = 'Enable Wake on Magic Packet (Set-NetAdapterPowerManagement)'
 $chkWakeMagic.Location = New-Object System.Drawing.Point(10,150)
-$chkWakeMagic.Size = New-Object System.Drawing.Size(520,20)
+$chkWakeMagic.Size = New-Object System.Drawing.Size(700,22)
+$chkWakeMagic.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right
 $grpDetails.Controls.Add($chkWakeMagic)
 
 $chkWakePattern = New-Object System.Windows.Forms.CheckBox
 $chkWakePattern.Text = 'Enable Wake on Pattern'
 $chkWakePattern.Location = New-Object System.Drawing.Point(10,175)
-$chkWakePattern.Size = New-Object System.Drawing.Size(520,20)
+$chkWakePattern.Size = New-Object System.Drawing.Size(700,22)
+$chkWakePattern.Anchor = $chkWakeMagic.Anchor
 $grpDetails.Controls.Add($chkWakePattern)
 
 $btnApplyPowerMgmt = New-Object System.Windows.Forms.Button
 $btnApplyPowerMgmt.Text = 'Apply Power Management'
 $btnApplyPowerMgmt.Location = New-Object System.Drawing.Point(10,205)
-$btnApplyPowerMgmt.Size = New-Object System.Drawing.Size(200,30)
+$btnApplyPowerMgmt.Size = New-Object System.Drawing.Size(220,34)
+$btnApplyPowerMgmt.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
 $grpDetails.Controls.Add($btnApplyPowerMgmt)
 
 # Advanced properties list and editor
 $lblAdv = New-Object System.Windows.Forms.Label
 $lblAdv.Text = 'Advanced Properties (driver-specific)'
-$lblAdv.Location = New-Object System.Drawing.Point(10,240)
-$lblAdv.Size = New-Object System.Drawing.Size(300,20)
+$lblAdv.Location = New-Object System.Drawing.Point(10,245)
+$lblAdv.Size = New-Object System.Drawing.Size(350,20)
+$lblAdv.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
 $grpDetails.Controls.Add($lblAdv)
 
 $lstAdv = New-Object System.Windows.Forms.ListView
-$lstAdv.Location = New-Object System.Drawing.Point(10,265)
-$lstAdv.Size = New-Object System.Drawing.Size(520,120)
+$lstAdv.Location = New-Object System.Drawing.Point(10,270)
+$lstAdv.Size = New-Object System.Drawing.Size(700,100)   # larger to show more rows
 $lstAdv.View = 'Details'
 $lstAdv.FullRowSelect = $true
-$lstAdv.Columns.Add('DisplayName',220) | Out-Null
-$lstAdv.Columns.Add('DisplayValue',150) | Out-Null
-$lstAdv.Columns.Add('RegistryKeyword',120) | Out-Null
+$lstAdv.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right
+# wider columns to avoid clipping
+$lstAdv.Columns.Add('DisplayName',320) | Out-Null
+$lstAdv.Columns.Add('DisplayValue',220) | Out-Null
+$lstAdv.Columns.Add('RegistryKeyword',160) | Out-Null
 $grpDetails.Controls.Add($lstAdv)
 
 $lblAdvValue = New-Object System.Windows.Forms.Label
 $lblAdvValue.Text = 'Set Value:'
-$lblAdvValue.Location = New-Object System.Drawing.Point(10,392)
+$lblAdvValue.Location = New-Object System.Drawing.Point(10,380)
 $lblAdvValue.Size = New-Object System.Drawing.Size(80,20)
+$lblAdvValue.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
 $grpDetails.Controls.Add($lblAdvValue)
 
 $txtAdvValue = New-Object System.Windows.Forms.TextBox
-$txtAdvValue.Location = New-Object System.Drawing.Point(90,390)
-$txtAdvValue.Size = New-Object System.Drawing.Size(210,22)
+$txtAdvValue.Location = New-Object System.Drawing.Point(90,378)
+$txtAdvValue.Size = New-Object System.Drawing.Size(260,24)
+$txtAdvValue.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right
 $grpDetails.Controls.Add($txtAdvValue)
 
 $btnSetAdv = New-Object System.Windows.Forms.Button
 $btnSetAdv.Text = 'Set Selected Property'
-$btnSetAdv.Location = New-Object System.Drawing.Point(310,388)
-$btnSetAdv.Size = New-Object System.Drawing.Size(220,26)
+$btnSetAdv.Location = New-Object System.Drawing.Point(360,376)
+$btnSetAdv.Size = New-Object System.Drawing.Size(220,28)
+$btnSetAdv.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Right
 $grpDetails.Controls.Add($btnSetAdv)
 
 # Powercfg device wake controls (enable/disable)
@@ -159,77 +176,90 @@ $lblPowercfg = New-Object System.Windows.Forms.Label
 $lblPowercfg.Text = 'powercfg Device Wake Controls:'
 $lblPowercfg.Location = New-Object System.Drawing.Point(10,420)
 $lblPowercfg.Size = New-Object System.Drawing.Size(300,20)
+$lblPowercfg.Anchor = [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Bottom
 $form.Controls.Add($lblPowercfg)
 
 $btnEnableDeviceWake = New-Object System.Windows.Forms.Button
 $btnEnableDeviceWake.Text = 'Enable Device Wake (powercfg)'
-$btnEnableDeviceWake.Location = New-Object System.Drawing.Point(10,445)
-$btnEnableDeviceWake.Size = New-Object System.Drawing.Size(200,30)
+$btnEnableDeviceWake.Location = New-Object System.Drawing.Point(10,450)
+$btnEnableDeviceWake.Size = New-Object System.Drawing.Size(240,34)
+$btnEnableDeviceWake.Anchor = [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Bottom
 $form.Controls.Add($btnEnableDeviceWake)
 
 $btnDisableDeviceWake = New-Object System.Windows.Forms.Button
 $btnDisableDeviceWake.Text = 'Disable Device Wake (powercfg)'
-$btnDisableDeviceWake.Location = New-Object System.Drawing.Point(220,445)
-$btnDisableDeviceWake.Size = New-Object System.Drawing.Size(200,30)
+$btnDisableDeviceWake.Location = New-Object System.Drawing.Point(10,490)
+$btnDisableDeviceWake.Size = New-Object System.Drawing.Size(240,34)
+$btnDisableDeviceWake.Anchor = [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Bottom
 $form.Controls.Add($btnDisableDeviceWake)
 
-# Magic packet test section
+# Magic packet test section (moved and enlarged)
 $grpTest = New-Object System.Windows.Forms.GroupBox
 $grpTest.Text = 'Test: Send Magic Packet'
-$grpTest.Location = New-Object System.Drawing.Point(350,320)
-$grpTest.Size = New-Object System.Drawing.Size(540,170)
+$grpTest.Location = New-Object System.Drawing.Point(360,380)
+$grpTest.Size = New-Object System.Drawing.Size(720,200)   # moved below details group
+$grpTest.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right -bor [System.Windows.Forms.AnchorStyles]::Bottom
 $form.Controls.Add($grpTest)
 
 $lblMac = New-Object System.Windows.Forms.Label
-$lblMac.Text = 'Target MAC (e.g. 00:11:22:AA:BB:CC):'
+$lblMac.Text = 'Target MAC:'
 $lblMac.Location = New-Object System.Drawing.Point(10,25)
-$lblMac.Size = New-Object System.Drawing.Size(220,20)
+$lblMac.Size = New-Object System.Drawing.Size(200,20)
+$lblMac.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
 $grpTest.Controls.Add($lblMac)
 
 $txtMac = New-Object System.Windows.Forms.TextBox
 $txtMac.Location = New-Object System.Drawing.Point(10,45)
-$txtMac.Size = New-Object System.Drawing.Size(200,22)
+$txtMac.Size = New-Object System.Drawing.Size(260,24)
+$txtMac.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right
 $grpTest.Controls.Add($txtMac)
 
 $lblBroadcast = New-Object System.Windows.Forms.Label
-$lblBroadcast.Text = 'Broadcast IP (default 255.255.255.255):'
-$lblBroadcast.Location = New-Object System.Drawing.Point(220,25)
-$lblBroadcast.Size = New-Object System.Drawing.Size(260,20)
+$lblBroadcast.Text = 'Broadcast IP:'
+$lblBroadcast.Location = New-Object System.Drawing.Point(290,25)
+$lblBroadcast.Size = New-Object System.Drawing.Size(150,20)
+$lblBroadcast.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
 $grpTest.Controls.Add($lblBroadcast)
 
 $txtBroadcast = New-Object System.Windows.Forms.TextBox
-$txtBroadcast.Location = New-Object System.Drawing.Point(220,45)
-$txtBroadcast.Size = New-Object System.Drawing.Size(140,22)
+$txtBroadcast.Location = New-Object System.Drawing.Point(290,45)
+$txtBroadcast.Size = New-Object System.Drawing.Size(180,24)
+$txtBroadcast.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
 $grpTest.Controls.Add($txtBroadcast)
 
 $lblPort = New-Object System.Windows.Forms.Label
 $lblPort.Text = 'Port (7 or 9):'
-$lblPort.Location = New-Object System.Drawing.Point(370,25)
+$lblPort.Location = New-Object System.Drawing.Point(480,25)
 $lblPort.Size = New-Object System.Drawing.Size(80,20)
+$lblPort.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
 $grpTest.Controls.Add($lblPort)
 
 $txtPort = New-Object System.Windows.Forms.TextBox
-$txtPort.Location = New-Object System.Drawing.Point(370,45)
-$txtPort.Size = New-Object System.Drawing.Size(60,22)
+$txtPort.Location = New-Object System.Drawing.Point(480,45)
+$txtPort.Size = New-Object System.Drawing.Size(80,24)
+$txtPort.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
 $grpTest.Controls.Add($txtPort)
 
 $btnSendMagic = New-Object System.Windows.Forms.Button
 $btnSendMagic.Text = 'Send Magic Packet'
-$btnSendMagic.Location = New-Object System.Drawing.Point(10,75)
-$btnSendMagic.Size = New-Object System.Drawing.Size(150,30)
+$btnSendMagic.Location = New-Object System.Drawing.Point(10,80)
+$btnSendMagic.Size = New-Object System.Drawing.Size(160,34)
+$btnSendMagic.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
 $grpTest.Controls.Add($btnSendMagic)
 
 $lblTestResult = New-Object System.Windows.Forms.Label
 $lblTestResult.Text = ''
-$lblTestResult.Location = New-Object System.Drawing.Point(170,80)
-$lblTestResult.Size = New-Object System.Drawing.Size(350,20)
+$lblTestResult.Location = New-Object System.Drawing.Point(180,88)
+$lblTestResult.Size = New-Object System.Drawing.Size(520,20)   # larger so messages don't wrap awkwardly
+$lblTestResult.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right
 $grpTest.Controls.Add($lblTestResult)
 
-# Bottom: BIOS notes and help
+# Bottom: BIOS notes and help (wider and taller)
 $grpNotes = New-Object System.Windows.Forms.GroupBox
 $grpNotes.Text = 'Notes & BIOS/UEFI steps (cannot change from OS)'
-$grpNotes.Location = New-Object System.Drawing.Point(10,500)
-$grpNotes.Size = New-Object System.Drawing.Size(880,100)
+$grpNotes.Location = New-Object System.Drawing.Point(10,600)
+$grpNotes.Size = New-Object System.Drawing.Size(1070,170)
+$grpNotes.Anchor = [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right -bor [System.Windows.Forms.AnchorStyles]::Bottom
 $form.Controls.Add($grpNotes)
 
 $txtNotes = New-Object System.Windows.Forms.TextBox
@@ -237,7 +267,8 @@ $txtNotes.Multiline = $true
 $txtNotes.ReadOnly = $true
 $txtNotes.ScrollBars = 'Vertical'
 $txtNotes.Location = New-Object System.Drawing.Point(10,20)
-$txtNotes.Size = New-Object System.Drawing.Size(860,70)
+$txtNotes.Size = New-Object System.Drawing.Size(1048,140)
+$txtNotes.Anchor = [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right -bor [System.Windows.Forms.AnchorStyles]::Bottom
 $txtNotes.Text = "Important:
  - Enabling Wake-on-LAN often requires enabling the option in the BIOS/UEFI (look for 'Wake on LAN', 'Power on by PCI-E', or similar). The script cannot modify firmware settings.
  - Ensure adapter drivers support Wake-on-LAN and that the adapter stays powered in S3/S5 if desired.
@@ -309,8 +340,13 @@ $lstAdapters.Add_SelectedIndexChanged({
 
 $btnApplyPowerMgmt.Add_Click({
     if (-not $global:CurrentAdapter) { [System.Windows.Forms.MessageBox]::Show('Select an adapter first','Error') | Out-Null; return }
+
+    # Map checkbox booleans to the string values expected by Set-NetAdapterPowerManagement
+    $wakeMagicVal = if ($chkWakeMagic.Checked) { 'Enabled' } else { 'Disabled' }
+    $wakePatternVal = if ($chkWakePattern.Checked) { 'Enabled' } else { 'Disabled' }
+
     try {
-        Set-NetAdapterPowerManagement -Name $global:CurrentAdapter.Name -WakeOnMagicPacket:$chkWakeMagic.Checked -WakeOnPattern:$chkWakePattern.Checked -ErrorAction Stop
+        Set-NetAdapterPowerManagement -Name $global:CurrentAdapter.Name -WakeOnMagicPacket $wakeMagicVal -WakeOnPattern $wakePatternVal -ErrorAction Stop
         [System.Windows.Forms.MessageBox]::Show('Power management settings applied.','Success') | Out-Null
         Show-AdapterDetails -adapter $global:CurrentAdapter
     } catch {
