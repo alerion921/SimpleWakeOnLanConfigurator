@@ -2257,7 +2257,7 @@ function Run-SystemDiagnostics {
             $report += ""
             $report += "Recent Errors:"
             $recentErrors = $global:LogEntries | Where-Object { $_.Level -eq 'Error' } | Select-Object -Last 5
-            foreach ($error in $recentErrors) {
+            foreach ($errors in $recentErrors) {
                 $report += "  $($error.Entry)"
             }
         }
